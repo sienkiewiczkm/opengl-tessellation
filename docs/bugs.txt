@@ -1,0 +1,3 @@
+ Problem: In Tessalation Shader - in function - there was an typo, 
+          instead of 3*u I had 3u. It didn't return any error. Why?
+Solution: None yet.

@@ -24,6 +24,7 @@ include_directories(
 link_directories(${GLFW_LIBRARY_DIRS})
 
 add_executable(${PROJECT_NAME} 
+  src/tessellation/bezierControlNetEffect.cpp
   src/tessellation/bezierPatch.cpp
   src/tessellation/bezierPatchEffect.cpp
   src/tessellation/main.cpp

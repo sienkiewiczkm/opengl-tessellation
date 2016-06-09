@@ -1,15 +1,16 @@
 #ifndef __BEZIER_PATCH_EFFECT_HPP__
 #define __BEZIER_PATCH_EFFECT_HPP__
 
-#include <string>
+#include "shaders.hpp"
 #include <GL/glew.h>
 #include <glm/mat4x4.hpp>
-#include "shaders.hpp"
+#include <string>
 
 struct BezierPatchEffectUniformLocations {
   GLuint projectionMatrix;
   GLuint viewMatrix;
   GLuint modelMatrix;
+  GLuint lightPosition;
   GLuint tessLevelInner;
   GLuint tessLevelOuter;
 };
@@ -22,14 +23,14 @@ public:
   void setProjectionMatrix(const glm::mat4 &projection);
   void setViewMatrix(const glm::mat4 &view);
   void setModelMatrix(const glm::mat4 &model);
+  void setLightPosition(const glm::vec3 &position);
 
   void begin();
   void end();
 
-protected:
+private:
   void getUniformLocations();
 
-private:
   std::shared_ptr<VertexShader> _vertexShader;
   std::shared_ptr<TessalationControlShader> _tessalationControlShader;
   std::shared_ptr<TessalationEvaluationShader> _tessalationEvaluationShader;

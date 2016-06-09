@@ -1,8 +1,9 @@
 #version 400 core
 
-in vec4 Position;
+layout (location = 0) in vec3 position;
+in vec3 teNormal;
 out vec3 vPosition;
 
 void main() {
-  vPosition = Position.xyz;
+  vPosition = position.xyz;
 }

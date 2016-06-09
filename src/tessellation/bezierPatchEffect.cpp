@@ -46,6 +46,10 @@ void BezierPatchEffect::setModelMatrix(const glm::mat4 &model) {
   _shaderProgram->setUniform(_uniforms.modelMatrix, model);
 }
 
+void BezierPatchEffect::setLightPosition(const glm::vec3 &position) {
+  _shaderProgram->setUniform(_uniforms.lightPosition, position);
+}
+
 void BezierPatchEffect::begin() {
   glUseProgram(_shaderProgram->getId());
 }
@@ -54,7 +58,6 @@ void BezierPatchEffect::end() {
 }
 
 void BezierPatchEffect::getUniformLocations() {
-  glUseProgram(_shaderProgram->getId());
   memset(&_uniforms, 0, sizeof(BezierPatchEffectUniformLocations));
   _uniforms.projectionMatrix =
     glGetUniformLocation(_shaderProgram->getId(), "projectionMatrix");
@@ -62,4 +65,7 @@ void BezierPatchEffect::getUniformLocations() {
     glGetUniformLocation(_shaderProgram->getId(), "viewMatrix");
   _uniforms.modelMatrix =
     glGetUniformLocation(_shaderProgram->getId(), "modelMatrix");
+  _uniforms.lightPosition =
+    glGetUniformLocation(_shaderProgram->getId(), "lightPosition");
 }
+
