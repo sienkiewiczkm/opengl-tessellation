@@ -130,7 +130,7 @@ int main()
       bezierPatchEffect.setProjectionMatrix(projection);
       bezierPatchEffect.setViewMatrix(camera.getViewMatrix());
       bezierPatchEffect.setModelMatrix(glm::mat4(1.0f));
-      bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+      bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 4.0f, 0.0f));
       patch.drawPatch();
       bezierPatchEffect.end();
 
