@@ -27,6 +27,9 @@ int gTessellationBump = 0;
 bool gDisplayControlNet = false;
 GLenum gPolygonMode = GL_FILL;
 
+BezierPatchGroup *activePatch = nullptr;
+BezierPatchGroup *unactivePatch = nullptr;
+
 int main()
 {
   glfwInit();
@@ -63,8 +66,14 @@ int main()
     }
   }
 
-  BezierPatchGroup patch;
-  patch.createFromHeightmap(25.0f, 25.0f, 4, 4, heightmap);
+  BezierPatchGroup patchWaves;
+  patchWaves.createWavesExample();
+
+  BezierPatchGroup patchSin;
+  patchSin.createSinusoidalExample();
+
+  activePatch = &patchWaves;
+  unactivePatch = &patchSin;
 
   BezierPatchEffect bezierPatchEffect;
   bezierPatchEffect.initialize("bezierPatch");
@@ -125,7 +134,7 @@ int main()
       bezierPatchEffect.setModelMatrix(glm::mat4(1.0f));
       bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 4.0f, 0.0f));
       bezierPatchEffect.setTessellationLevelBump(gTessellationBump);
-      patch.drawPatches(&bezierPatchEffect);
+      activePatch->drawPatches(&bezierPatchEffect);
       bezierPatchEffect.end();
 
       if (gDisplayControlNet) {
@@ -133,7 +142,7 @@ int main()
         bezierNetEffect.setProjectionMatrix(projection);
         bezierNetEffect.setViewMatrix(camera.getViewMatrix());
         bezierNetEffect.setModelMatrix(glm::mat4(1.0f));
-        patch.drawControlNets(&bezierNetEffect);
+        activePatch->drawControlNets(&bezierNetEffect);
         bezierNetEffect.end();
       }
 
@@ -170,6 +179,10 @@ void key_callback(
     if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
       if (gTessellationBump > 0)
         --gTessellationBump;
+    }
+
+    if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+      swap(activePatch, unactivePatch);
     }
 }
 

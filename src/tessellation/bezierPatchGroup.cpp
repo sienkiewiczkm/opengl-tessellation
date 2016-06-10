@@ -8,9 +8,43 @@ BezierPatchGroup::BezierPatchGroup() {
 }
 
 void BezierPatchGroup::createSinusoidalExample() {
+  int uPatches = 4;
+  int vPatches = 4;
+
+  vector<float> heightmap;
+  for (int z = 0; z < 4*3+1; ++z) {
+    for (int x = 0; x < 4*3+1; ++x) {
+      float height = 0.0f;
+      int multipler = (z/3)%2==0 ? -1 : +1;
+      if (z%3==1 || z%3==2) 
+        height = 2.0f;
+      heightmap.push_back(multipler*height);
+    }
+  }
+
+  createFromHeightmap(30.0f, 30.0f, uPatches, vPatches, heightmap);
 }
 
 void BezierPatchGroup::createWavesExample() {
+  int uPatches = 4;
+  int vPatches = 4;
+
+  vector<float> heightmap;
+  for (int z = 0; z < 4*3+1; ++z) {
+    for (int x = 0; x < 4*3+1; ++x) {
+      float height = 0.0f;
+
+      int multipler1 = (z/3)%2==0 ? -1 : +1;
+      int multipler2 = (x/3)%2==0 ? -1 : +1;
+
+      if ((z%3==1 || z%3==2) && (x%3==1 || x%3==2)) 
+        height = 2.0f;
+
+      heightmap.push_back(multipler1*multipler2*height);
+    }
+  }
+
+  createFromHeightmap(30.0f, 30.0f, uPatches, vPatches, heightmap);
 }
 
 void BezierPatchGroup::createFromHeightmap(
