@@ -22,6 +22,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 float gRequestedScrolling = 0;
 
+bool gDisplayControlNet = false;
+GLenum gPolygonMode = GL_FILL;
+
 int main()
 {
   glfwInit();
@@ -74,7 +77,7 @@ int main()
   camera.setDist(7.0f);
 
   auto projection = glm::perspective(
-    glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.1f, 100.0f
+    glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.01f, 100.0f
   );
 
   double previousTime = glfwGetTime();
@@ -84,9 +87,6 @@ int main()
   double mouseSensitivityX = 0.01f;
   double mouseSensitivityY = 0.01f;
   glfwGetCursorPos(window, &currentMousePositionX, &currentMousePositionY);
-
-  GLenum polygonMode = GL_FILL;
-  bool polygonModeChanged = false;
 
   while (!glfwWindowShouldClose(window))
   {
@@ -113,18 +113,10 @@ int main()
         camera.rotate(-mouseDeltaY, mouseDeltaX);
       }
 
-      if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        if (!polygonModeChanged) {
-          if (polygonMode == GL_FILL) polygonMode = GL_LINE;
-          else polygonMode = GL_FILL;
-        }
-        polygonModeChanged = true;
-      } else polygonModeChanged = false;
-
       glfwPollEvents();
       glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+      glPolygonMode(GL_FRONT_AND_BACK, gPolygonMode);
 
       bezierPatchEffect.begin();
       bezierPatchEffect.setProjectionMatrix(projection);
@@ -134,12 +126,14 @@ int main()
       patch.drawPatch();
       bezierPatchEffect.end();
 
-      bezierNetEffect.begin();
-      bezierNetEffect.setProjectionMatrix(projection);
-      bezierNetEffect.setViewMatrix(camera.getViewMatrix());
-      bezierNetEffect.setModelMatrix(glm::mat4(1.0f));
-      patch.drawControlNet();
-      bezierNetEffect.end();
+      if (gDisplayControlNet) {
+        bezierNetEffect.begin();
+        bezierNetEffect.setProjectionMatrix(projection);
+        bezierNetEffect.setViewMatrix(camera.getViewMatrix());
+        bezierNetEffect.setModelMatrix(glm::mat4(1.0f));
+        patch.drawControlNet();
+        bezierNetEffect.end();
+      }
 
       glfwSwapBuffers(window);
   }
@@ -149,15 +143,23 @@ int main()
 }
 
 void key_callback(
-    GLFWwindow* window, 
-    int key, 
-    int scancode, 
-    int action, 
-    int mode
-    )
-{
+  GLFWwindow* window, 
+  int key, 
+  int scancode, 
+  int action, 
+  int mode
+) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+      glfwSetWindowShouldClose(window, GL_TRUE);
+
+    if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+      if (gPolygonMode == GL_FILL) gPolygonMode = GL_LINE;
+      else gPolygonMode = GL_FILL;
+    }
+
+    if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+      gDisplayControlNet = !gDisplayControlNet;
+    }
 }
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)

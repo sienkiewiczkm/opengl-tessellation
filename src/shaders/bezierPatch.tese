@@ -25,9 +25,9 @@ vec4 bernsteinBasis(float u) {
 
 vec4 bernsteinDerivativeBasis(float u) {
   float u2 = u*u;
-  return vec4(
+  return 3*vec4(
     2*u - u2 - 1,
-    1 - 4*u + 2*u2,
+    1 - 4*u + 3*u2,
     2*u - 3*u2,
     u2
   );
@@ -63,24 +63,23 @@ void main() {
   float x = dot(uBasis, Px * vBasis);
   float y = dot(uBasis, Py * vBasis);
   float z = dot(uBasis, Pz * vBasis);
-  tePosition = vec3(x, y, z);
+  vec3 viewPosition = vec3(x, y, z);
 
   float dux = dot(uDerivativeBasis, Px * vBasis);
   float duy = dot(uDerivativeBasis, Py * vBasis);
   float duz = dot(uDerivativeBasis, Pz * vBasis);
-  vec3 du = vec3(dux, duy, duz);
+  vec3 du = normalize(vec3(dux, duy, duz));
 
   float dvx = dot(uBasis, Px * vDerivativeBasis);
   float dvy = dot(uBasis, Py * vDerivativeBasis);
   float dvz = dot(uBasis, Pz * vDerivativeBasis);
-  vec3 dv = vec3(dvx, dvy, dvz);
+  vec3 dv = normalize(vec3(dvx, dvy, dvz));
 
-  vec4 localPosition = vec4(x, y, z, 1);
-  vec4 viewPosition = viewMatrix * modelMatrix * localPosition;
-  vec4 viewLightPosition = viewMatrix * vec4(lightPosition, 1);
-  tePosition = viewPosition.xyz;
+  tePosition = viewPosition;
+  teNormal = normalize(cross(dv, du));
 
-  teNormal = (viewMatrix * vec4(normalize(cross(dv, du)), 0)).xyz;
-  teLightDirection = (viewLightPosition - viewPosition).xyz;
-  gl_Position = projectionMatrix * viewPosition;
+  vec3 viewLightPosition = (viewMatrix * vec4(lightPosition, 1)).xyz;
+  teLightDirection = normalize(viewLightPosition - viewPosition);
+
+  gl_Position = projectionMatrix * vec4(viewPosition, 1);
 }

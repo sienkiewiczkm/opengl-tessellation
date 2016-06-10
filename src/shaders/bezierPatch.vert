@@ -1,9 +1,11 @@
 #version 400 core
 
 layout (location = 0) in vec3 position;
-in vec3 teNormal;
 out vec3 vPosition;
 
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
 void main() {
-  vPosition = position.xyz;
+  vPosition = (viewMatrix * modelMatrix * vec4(position, 1)).xyz;
 }
