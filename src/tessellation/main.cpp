@@ -57,14 +57,14 @@ int main()
   uniform_real_distribution<float> distribution(-1.0, 1.0);
 
   vector<float> heightmap;
-  for (int z = 0; z < 3*2+1; ++z) {
-    for (int x = 0; x < 3*2+1; ++x) {
+  for (int z = 0; z < 3*4+1; ++z) {
+    for (int x = 0; x < 3*4+1; ++x) {
       heightmap.push_back(distribution(generator));
     }
   }
 
   BezierPatchGroup patch;
-  patch.createFromHeightmap(10.0f, 10.0f, 2, 2, heightmap);
+  patch.createFromHeightmap(25.0f, 25.0f, 4, 4, heightmap);
 
   BezierPatchEffect bezierPatchEffect;
   bezierPatchEffect.initialize("bezierPatch");
@@ -75,7 +75,6 @@ int main()
   glEnable(GL_DEPTH_TEST);
 
   OrbitingCamera camera;
- // camera.rotate(glm::radians(30.0f), glm::radians(45.0f));
   camera.setDist(7.0f);
 
   auto projection = glm::perspective(

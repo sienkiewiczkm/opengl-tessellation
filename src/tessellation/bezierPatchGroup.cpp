@@ -70,7 +70,19 @@ void BezierPatchGroup::drawPatches(EffectBase *effect) const {
 }
 
 void BezierPatchGroup::drawControlNets(EffectBase *effect) const {
-  for (auto &patch : _patches) {
-    patch.drawControlNet();
+  float patchWidth = _width / _uPatches;
+  float patchLength = _length / _vPatches;
+  float Rx = (_uPatches - 1) * patchWidth;
+  float Rz = (_vPatches - 1) * patchLength;
+
+  for (int z = 0; z < _vPatches; ++z) {
+    for (int x = 0; x < _uPatches; ++x) {
+      auto index = z * _vPatches + x;
+      float dz = (z/((float)_vPatches-1)) * Rz - 0.5f * Rz;
+      float dx = (x/((float)_uPatches-1)) * Rx - 0.5f * Rx;
+      auto model = glm::translate(glm::mat4(1.0f), glm::vec3(dx, 0.0f, dz));
+      effect->setModelMatrix(model);
+      _patches[index].drawControlNet();
+    }
   }
 }

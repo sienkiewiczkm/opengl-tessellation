@@ -13,7 +13,17 @@ float factor(float z) {
 }
 
 float estimateTessalationLevel(vec3 v0, vec3 v1, vec3 v2, vec3 v3) {
-  float closest = min(abs(v0.z), min(abs(v1.z), min(abs(v2.z), abs(v3.z))));
+  float closest = min(
+    length(v0), 
+    min(
+      length(v1), 
+      min(
+        length(v2), 
+        length(v3)
+      )
+    )
+  );
+
   return factor(closest);
 }
 
@@ -30,7 +40,7 @@ void main() {
     );
 
     gl_TessLevelOuter[3] = tessellationLevelBump + estimateTessalationLevel(
-      vPosition[12], vPosition[13], vPosition[14], vPosition[15]
+      vPosition[12], vPosition[13], vPosition[15], vPosition[15]
     );
 
     gl_TessLevelOuter[2] = tessellationLevelBump + estimateTessalationLevel(
@@ -41,7 +51,10 @@ void main() {
       gl_TessLevelOuter[0], 
       max(
         gl_TessLevelOuter[1], 
-        max(gl_TessLevelOuter[2], gl_TessLevelOuter[3])
+        max(
+          gl_TessLevelOuter[2], 
+          gl_TessLevelOuter[3]
+        )
       )
     );
 
