@@ -21,19 +21,19 @@ void main() {
   tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
 
   if (gl_InvocationID == 0) {
-    gl_TessLevelOuter[0] = tessellationLevelBump + estimateTessalationLevel(
+    gl_TessLevelOuter[1] = tessellationLevelBump + estimateTessalationLevel(
       vPosition[0], vPosition[1], vPosition[2], vPosition[3]
     );
 
-    gl_TessLevelOuter[1] = tessellationLevelBump + estimateTessalationLevel(
+    gl_TessLevelOuter[0] = tessellationLevelBump + estimateTessalationLevel(
       vPosition[0], vPosition[4], vPosition[8], vPosition[12]
     );
 
-    gl_TessLevelOuter[2] = tessellationLevelBump + estimateTessalationLevel(
-      vPosition[12], vPosition[13], vPosition[15], vPosition[15]
+    gl_TessLevelOuter[3] = tessellationLevelBump + estimateTessalationLevel(
+      vPosition[12], vPosition[13], vPosition[14], vPosition[15]
     );
 
-    gl_TessLevelOuter[3] = tessellationLevelBump + estimateTessalationLevel(
+    gl_TessLevelOuter[2] = tessellationLevelBump + estimateTessalationLevel(
       vPosition[3], vPosition[7], vPosition[11], vPosition[15]
     );
 

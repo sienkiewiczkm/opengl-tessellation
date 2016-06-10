@@ -41,7 +41,7 @@ glm::mat4 OrbitingCamera::getViewMatrix() {
 }
 
 glm::vec3 OrbitingCamera::getPosition() {
-  glm::vec4 cameraStartPosition(0.0f, 0.0f, -_dist, 1.0f);
+  glm::vec4 cameraStartPosition(0.0f, 0.0f, _dist, 1.0f);
   glm::mat4 cameraPositionTransform = glm::rotate(glm::mat4(1.0f),
     _rotationY, glm::vec3(0.0f, 1.0f, 0.0f));
   cameraPositionTransform = glm::rotate(cameraPositionTransform,

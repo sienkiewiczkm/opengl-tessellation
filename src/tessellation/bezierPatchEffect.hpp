@@ -1,7 +1,9 @@
 #ifndef __BEZIER_PATCH_EFFECT_HPP__
 #define __BEZIER_PATCH_EFFECT_HPP__
 
+#include "effectBase.hpp"
 #include "shaders.hpp"
+
 #include <GL/glew.h>
 #include <glm/mat4x4.hpp>
 #include <string>
@@ -14,14 +16,14 @@ struct BezierPatchEffectUniformLocations {
   GLuint tessellationLevelBump;
 };
 
-class BezierPatchEffect {
+class BezierPatchEffect : public EffectBase {
 public:
   BezierPatchEffect();
   void initialize(std::string shaderName);
 
   void setProjectionMatrix(const glm::mat4 &projection);
   void setViewMatrix(const glm::mat4 &view);
-  void setModelMatrix(const glm::mat4 &model);
+  virtual void setModelMatrix(const glm::mat4 &model);
   void setLightPosition(const glm::vec3 &position);
   void setTessellationLevelBump(int levelBump);
 

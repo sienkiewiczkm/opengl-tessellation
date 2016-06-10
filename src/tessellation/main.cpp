@@ -1,6 +1,7 @@
+#include "bezierControlNetEffect.hpp"
 #include "bezierPatch.hpp"
 #include "bezierPatchEffect.hpp"
-#include "bezierControlNetEffect.hpp"
+#include "bezierPatchGroup.hpp"
 #include "orbitingCamera.hpp"
 
 #include <GL/glew.h>
@@ -56,14 +57,14 @@ int main()
   uniform_real_distribution<float> distribution(-1.0, 1.0);
 
   vector<float> heightmap;
-  for (int z = 0; z < 4; ++z) {
-    for (int x = 0; x < 4; ++x) {
+  for (int z = 0; z < 3*2+1; ++z) {
+    for (int x = 0; x < 3*2+1; ++x) {
       heightmap.push_back(distribution(generator));
     }
   }
 
-  BezierPatch patch;
-  patch.createFromHeightmap(10.0f, 10.0f, heightmap);
+  BezierPatchGroup patch;
+  patch.createFromHeightmap(10.0f, 10.0f, 2, 2, heightmap);
 
   BezierPatchEffect bezierPatchEffect;
   bezierPatchEffect.initialize("bezierPatch");
@@ -74,7 +75,7 @@ int main()
   glEnable(GL_DEPTH_TEST);
 
   OrbitingCamera camera;
-  camera.rotate(glm::radians(30.0f), glm::radians(45.0f));
+ // camera.rotate(glm::radians(30.0f), glm::radians(45.0f));
   camera.setDist(7.0f);
 
   auto projection = glm::perspective(
@@ -111,7 +112,7 @@ int main()
       gRequestedScrolling = 0.0f;
 
       if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        camera.rotate(-mouseDeltaY, mouseDeltaX);
+        camera.rotate(mouseDeltaY, mouseDeltaX);
       }
 
       glfwPollEvents();
@@ -125,7 +126,7 @@ int main()
       bezierPatchEffect.setModelMatrix(glm::mat4(1.0f));
       bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 4.0f, 0.0f));
       bezierPatchEffect.setTessellationLevelBump(gTessellationBump);
-      patch.drawPatch();
+      patch.drawPatches(&bezierPatchEffect);
       bezierPatchEffect.end();
 
       if (gDisplayControlNet) {
@@ -133,7 +134,7 @@ int main()
         bezierNetEffect.setProjectionMatrix(projection);
         bezierNetEffect.setViewMatrix(camera.getViewMatrix());
         bezierNetEffect.setModelMatrix(glm::mat4(1.0f));
-        patch.drawControlNet();
+        patch.drawControlNets(&bezierNetEffect);
         bezierNetEffect.end();
       }
 

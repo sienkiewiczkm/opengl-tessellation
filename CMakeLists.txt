@@ -27,6 +27,7 @@ add_executable(${PROJECT_NAME}
   src/tessellation/bezierControlNetEffect.cpp
   src/tessellation/bezierPatch.cpp
   src/tessellation/bezierPatchEffect.cpp
+  src/tessellation/bezierPatchGroup.cpp
   src/tessellation/main.cpp
   src/tessellation/orbitingCamera.cpp
   src/tessellation/shaders.cpp
