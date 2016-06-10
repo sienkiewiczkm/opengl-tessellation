@@ -4,19 +4,47 @@ layout(vertices = 16) out;
 in vec3 vPosition[];
 out vec3 tcPosition[];
 
+const float invLog10 = 1.0 / log(10);
+
+float factor(float z) {
+  return max(2, -16 * log(z * 0.01) * invLog10);
+}
+
+float estimateTessalationLevel(vec3 v0, vec3 v1, vec3 v2, vec3 v3) {
+  float closest = min(abs(v0.z), min(abs(v1.z), min(abs(v2.z), abs(v3.z))));
+  return factor(closest);
+}
+
 void main() {
-    tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
+  tcPosition[gl_InvocationID] = vPosition[gl_InvocationID];
 
-    float TessLevelInner = 32;
-    float TessLevelOuter = 32;
+  if (gl_InvocationID == 0) {
+    gl_TessLevelOuter[0] = estimateTessalationLevel(
+      vPosition[0], vPosition[1], vPosition[2], vPosition[3]
+    );
 
-    if (gl_InvocationID == 0) {
-        gl_TessLevelInner[0] = TessLevelInner;
-        gl_TessLevelInner[1] = TessLevelInner;
-        gl_TessLevelOuter[0] = TessLevelOuter;
-        gl_TessLevelOuter[1] = TessLevelOuter;
-        gl_TessLevelOuter[2] = TessLevelOuter;
-        gl_TessLevelOuter[3] = TessLevelOuter;
-    }
+    gl_TessLevelOuter[1] = estimateTessalationLevel(
+      vPosition[0], vPosition[4], vPosition[8], vPosition[12]
+    );
+
+    gl_TessLevelOuter[2] = estimateTessalationLevel(
+      vPosition[12], vPosition[13], vPosition[15], vPosition[15]
+    );
+
+    gl_TessLevelOuter[3] = estimateTessalationLevel(
+      vPosition[3], vPosition[7], vPosition[11], vPosition[15]
+    );
+
+    float outerAverage = max(
+      gl_TessLevelOuter[0], 
+      max(
+        gl_TessLevelOuter[1], 
+        max(gl_TessLevelOuter[2], gl_TessLevelOuter[3])
+      )
+    );
+
+    gl_TessLevelInner[0] = outerAverage;
+    gl_TessLevelInner[1] = outerAverage;
+  }
 }
 
