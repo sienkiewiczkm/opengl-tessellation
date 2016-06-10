@@ -50,6 +50,10 @@ void BezierPatchEffect::setLightPosition(const glm::vec3 &position) {
   _shaderProgram->setUniform(_uniforms.lightPosition, position);
 }
 
+void BezierPatchEffect::setTessellationLevelBump(int levelBump) {
+  _shaderProgram->setUniform(_uniforms.tessellationLevelBump, levelBump);
+}
+
 void BezierPatchEffect::begin() {
   glUseProgram(_shaderProgram->getId());
 }
@@ -67,5 +71,7 @@ void BezierPatchEffect::getUniformLocations() {
     glGetUniformLocation(_shaderProgram->getId(), "modelMatrix");
   _uniforms.lightPosition =
     glGetUniformLocation(_shaderProgram->getId(), "lightPosition");
+  _uniforms.tessellationLevelBump =
+    glGetUniformLocation(_shaderProgram->getId(), "tessellationLevelBump");
 }
 

@@ -11,8 +11,7 @@ struct BezierPatchEffectUniformLocations {
   GLuint viewMatrix;
   GLuint modelMatrix;
   GLuint lightPosition;
-  GLuint tessLevelInner;
-  GLuint tessLevelOuter;
+  GLuint tessellationLevelBump;
 };
 
 class BezierPatchEffect {
@@ -24,6 +23,7 @@ public:
   void setViewMatrix(const glm::mat4 &view);
   void setModelMatrix(const glm::mat4 &model);
   void setLightPosition(const glm::vec3 &position);
+  void setTessellationLevelBump(int levelBump);
 
   void begin();
   void end();

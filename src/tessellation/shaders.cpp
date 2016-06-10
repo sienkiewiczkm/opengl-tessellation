@@ -115,3 +115,6 @@ void ShaderProgram::setUniform(GLuint location, const glm::vec3 &vec) {
   glUniform3fv(location, 1, glm::value_ptr(vec));
 }
 
+void ShaderProgram::setUniform(GLuint location, GLint value) {
+  glUniform1i(location, value);
+}

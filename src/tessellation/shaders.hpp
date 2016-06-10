@@ -57,6 +57,7 @@ public:
 
   void setUniform(GLuint location, const glm::mat4 &matrix);
   void setUniform(GLuint location, const glm::vec3 &vec);
+  void setUniform(GLuint location, GLint value);
 
 private:
   GLuint _program;

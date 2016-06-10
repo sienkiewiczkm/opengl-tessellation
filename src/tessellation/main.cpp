@@ -22,6 +22,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 float gRequestedScrolling = 0;
 
+int gTessellationBump = 0;
 bool gDisplayControlNet = false;
 GLenum gPolygonMode = GL_FILL;
 
@@ -123,6 +124,7 @@ int main()
       bezierPatchEffect.setViewMatrix(camera.getViewMatrix());
       bezierPatchEffect.setModelMatrix(glm::mat4(1.0f));
       bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 4.0f, 0.0f));
+      bezierPatchEffect.setTessellationLevelBump(gTessellationBump);
       patch.drawPatch();
       bezierPatchEffect.end();
 
@@ -159,6 +161,15 @@ void key_callback(
 
     if (key == GLFW_KEY_C && action == GLFW_PRESS) {
       gDisplayControlNet = !gDisplayControlNet;
+    }
+
+    if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
+      ++gTessellationBump;
+    }
+
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
+      if (gTessellationBump > 0)
+        --gTessellationBump;
     }
 }
 
