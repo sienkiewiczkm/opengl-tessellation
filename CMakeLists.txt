@@ -31,6 +31,7 @@ add_executable(${PROJECT_NAME}
   src/tessellation/main.cpp
   src/tessellation/orbitingCamera.cpp
   src/tessellation/shaders.cpp
+  src/tessellation/textures.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 

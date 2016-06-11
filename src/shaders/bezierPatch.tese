@@ -2,15 +2,26 @@
 layout(quads) in;
 
 in vec3 tcPosition[];
+
 out vec3 tePosition;
 out vec4 tePatchDistance;
 out vec3 teNormal;
+out vec3 teTangent;
+out vec3 teBinormal;
 out vec3 teLightDirection;
+out vec2 teTexcoords;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform vec3 lightPosition;
+uniform int patchesNumU;
+uniform int patchesNumV;
+uniform int uPatch;
+uniform int vPatch;
+uniform sampler2D diffuseTexture;
+uniform sampler2D normalTexture;
+uniform sampler2D displacementTexture;
 
 vec4 bernsteinBasis(float u) {
   float u2 = u*u;
@@ -33,9 +44,25 @@ vec4 bernsteinDerivativeBasis(float u) {
   );
 }
 
+const float invLog10 = 1.0 / log(10);
+
+float factor(float z) {
+  return max(2, -16 * log(z * 0.01) * invLog10);
+}
+
+float getMipLevel(float z) {
+  return 6 - log(factor(z));
+}
+
 void main() {
   float u = gl_TessCoord.x, v = gl_TessCoord.y;
   tePatchDistance = vec4(u, v, 1-u, 1-v);
+
+  float patchPartSizeU = 1.0 / patchesNumU;
+  float patchPartSizeV = 1.0 / patchesNumV;
+  float texU = uPatch*patchPartSizeU + u*patchPartSizeU;
+  float texV = vPatch*patchPartSizeU + v*patchPartSizeV;
+  teTexcoords = vec2(texU, texV);
 
   mat4 Px = mat4(
     tcPosition[0].x, tcPosition[1].x, tcPosition[2].x, tcPosition[3].x, 
@@ -68,15 +95,19 @@ void main() {
   float dux = dot(uDerivativeBasis, Px * vBasis);
   float duy = dot(uDerivativeBasis, Py * vBasis);
   float duz = dot(uDerivativeBasis, Pz * vBasis);
-  vec3 du = normalize(vec3(dux, duy, duz));
+  teTangent = normalize(vec3(dux, duy, duz));
 
   float dvx = dot(uBasis, Px * vDerivativeBasis);
   float dvy = dot(uBasis, Py * vDerivativeBasis);
   float dvz = dot(uBasis, Pz * vDerivativeBasis);
-  vec3 dv = normalize(vec3(dvx, dvy, dvz));
+  teBinormal = normalize(vec3(dvx, dvy, dvz));
 
+  teNormal = normalize(cross(teBinormal, teTangent));
+
+  float mipLevel = getMipLevel(viewPosition.z);
+  float displacement = texture(displacementTexture, teTexcoords).r;
+  viewPosition += teNormal * displacement * 0.2;
   tePosition = viewPosition;
-  teNormal = normalize(cross(dv, du));
 
   vec3 viewLightPosition = (viewMatrix * vec4(lightPosition, 1)).xyz;
   teLightDirection = normalize(viewLightPosition - viewPosition);

@@ -15,7 +15,7 @@ public:
   void createFromHeightmap(float width, float length, 
       int uPatches, int vPatches, std::vector<float> heightmap);
 
-  void drawPatches(EffectBase *effect) const;
+  void drawPatches(BezierPatchEffect *effect) const;
   void drawControlNets(EffectBase *effect) const;
 
 private:

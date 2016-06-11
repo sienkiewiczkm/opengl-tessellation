@@ -1,3 +1,4 @@
+#include "bezierPatchEffect.hpp"
 #include "bezierPatchGroup.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -85,11 +86,14 @@ void BezierPatchGroup::createFromHeightmap(
   _length = length;
 }
 
-void BezierPatchGroup::drawPatches(EffectBase *effect) const {
+void BezierPatchGroup::drawPatches(BezierPatchEffect *effect) const {
   float patchWidth = _width / _uPatches;
   float patchLength = _length / _vPatches;
   float Rx = (_uPatches - 1) * patchWidth;
   float Rz = (_vPatches - 1) * patchLength;
+
+  effect->setPatchesNumU(_uPatches);
+  effect->setPatchesNumV(_vPatches);
 
   for (int z = 0; z < _vPatches; ++z) {
     for (int x = 0; x < _uPatches; ++x) {
@@ -98,6 +102,8 @@ void BezierPatchGroup::drawPatches(EffectBase *effect) const {
       float dx = (x/((float)_uPatches-1)) * Rx - 0.5f * Rx;
       auto model = glm::translate(glm::mat4(1.0f), glm::vec3(dx, 0.0f, dz));
       effect->setModelMatrix(model);
+      effect->setPatchU(x);
+      effect->setPatchV(z);
       _patches[index].drawPatch();
     }
   }

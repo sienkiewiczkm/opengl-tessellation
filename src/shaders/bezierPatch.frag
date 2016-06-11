@@ -3,8 +3,13 @@
 out vec4 color;
 
 in vec3 teNormal;
+in vec3 teTangent;
+in vec3 teBinormal;
 in vec3 tePosition;
 in vec3 teLightDirection;
+in vec2 teTexcoords;
+uniform sampler2D diffuseTexture;
+uniform sampler2D normalTexture;
 
 vec3 phongModelViewSpace(
   vec3 viewNormal, 
@@ -34,8 +39,13 @@ vec3 phongModelViewSpace(
 }
 
 void main() {
+  vec3 normalColor = texture(normalTexture, teTexcoords).rgb;
+  vec3 tbnNormal = normalize((normalColor-0.5)*2.0);
+  vec3 transformedNormal = normalize(tbnNormal.x * teTangent + tbnNormal.y * teBinormal
+    + tbnNormal.z * teNormal);
+
   vec3 lighting = phongModelViewSpace(
-    normalize(teNormal),
+    transformedNormal,
     normalize(tePosition),
     normalize(teLightDirection),
     0.1,
@@ -47,5 +57,5 @@ void main() {
     vec3(1.0, 1.0, 1.0)
   );
 
-  color = vec4(lighting, 1);
+  color = texture(diffuseTexture, teTexcoords) * vec4(lighting, 1);
 }

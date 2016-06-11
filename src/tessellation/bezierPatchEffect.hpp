@@ -14,6 +14,13 @@ struct BezierPatchEffectUniformLocations {
   GLuint modelMatrix;
   GLuint lightPosition;
   GLuint tessellationLevelBump;
+  GLuint patchesNumU;
+  GLuint patchesNumV;
+  GLuint uPatch;
+  GLuint vPatch;
+  GLuint diffuseTexture;
+  GLuint normalTexture;
+  GLuint displacementTexture;
 };
 
 class BezierPatchEffect : public EffectBase {
@@ -26,6 +33,14 @@ public:
   virtual void setModelMatrix(const glm::mat4 &model);
   void setLightPosition(const glm::vec3 &position);
   void setTessellationLevelBump(int levelBump);
+  void setPatchesNumU(int uPatches);
+  void setPatchesNumV(int vPatches);
+  void setPatchU(int patch);
+  void setPatchV(int patch);
+
+  void setDiffuseTexture(GLuint texture);
+  void setNormalTexture(GLuint texture);
+  void setDisplacementTexture(GLuint texture);
 
   void begin();
   void end();

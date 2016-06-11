@@ -2,7 +2,9 @@
 #include "bezierPatch.hpp"
 #include "bezierPatchEffect.hpp"
 #include "bezierPatchGroup.hpp"
+#include "config.hpp"
 #include "orbitingCamera.hpp"
+#include "textures.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -12,9 +14,9 @@
 #include <glm/gtc/constants.hpp>
 
 #include <algorithm>
-#include <random>
 #include <cstdlib>
 #include <iostream>
+#include <random>
 
 using namespace std;
 
@@ -86,6 +88,11 @@ int main()
   OrbitingCamera camera;
   camera.setDist(7.0f);
 
+  GLuint diffuseMap = loadTexture(ASSETS_PATH_PREFIX"textures/diffuse.png");
+  GLuint normalMap = loadTexture(ASSETS_PATH_PREFIX"textures/normals.png");
+  GLuint displacementMap = 
+    loadTexture(ASSETS_PATH_PREFIX"textures/height.png");
+
   auto projection = glm::perspective(
     glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.01f, 100.0f
   );
@@ -134,6 +141,9 @@ int main()
       bezierPatchEffect.setModelMatrix(glm::mat4(1.0f));
       bezierPatchEffect.setLightPosition(glm::vec3(0.0f, 4.0f, 0.0f));
       bezierPatchEffect.setTessellationLevelBump(gTessellationBump);
+      bezierPatchEffect.setDiffuseTexture(diffuseMap);
+      bezierPatchEffect.setNormalTexture(normalMap);
+      bezierPatchEffect.setDisplacementTexture(displacementMap);
       activePatch->drawPatches(&bezierPatchEffect);
       bezierPatchEffect.end();
 
